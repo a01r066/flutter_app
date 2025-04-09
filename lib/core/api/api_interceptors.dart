@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+
 import '../constants/api_constants.dart';
 import '../storage/secure_storage_service.dart';
 
@@ -11,10 +13,12 @@ class ApiKeyInterceptor extends Interceptor {
 
   @override
   Future<void> onRequest(
-      RequestOptions options,
-      RequestInterceptorHandler handler
-      ) async {
-    final apiKey = await _secureStorage.read(key: ApiConstants.apiKeyStorage);
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final apiKey =
+        await _secureStorage.read(key: ApiConstants.apiKeyStorage) ??
+        ApiConstants.apiKeyStorage;
 
     if (apiKey != null && apiKey.isNotEmpty) {
       options.queryParameters[ApiConstants.apiKey] = apiKey;
@@ -28,14 +32,18 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (kDebugMode) {
-      print('┌─────────────────────────────────────────────────────────────────────');
+      print(
+        '┌─────────────────────────────────────────────────────────────────────',
+      );
       print('│ 🌐 REQUEST: ${options.method} ${options.uri}');
       print('│ 📃 HEADERS: ${_formatHeaders(options.headers)}');
       print('│ 📦 PARAMETERS: ${_formatParams(options.queryParameters)}');
       if (options.data != null) {
         print('│ 📄 BODY: ${_formatData(options.data)}');
       }
-      print('└─────────────────────────────────────────────────────────────────────');
+      print(
+        '└─────────────────────────────────────────────────────────────────────',
+      );
     }
     super.onRequest(options, handler);
   }
@@ -43,14 +51,22 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
-      print('┌─────────────────────────────────────────────────────────────────────');
-      print('│ ✅ RESPONSE: ${response.statusCode} ${response.requestOptions.uri}');
-      print('│ ⏱️ TIME: ${response.requestOptions.extra['time'] ?? 'unknown'} ms');
+      print(
+        '┌─────────────────────────────────────────────────────────────────────',
+      );
+      print(
+        '│ ✅ RESPONSE: ${response.statusCode} ${response.requestOptions.uri}',
+      );
+      print(
+        '│ ⏱️ TIME: ${response.requestOptions.extra['time'] ?? 'unknown'} ms',
+      );
       print('│ 📃 HEADERS: ${_formatHeaders(response.headers.map)}');
       if (response.data != null) {
         print('│ 📄 BODY: ${_formatData(response.data)}');
       }
-      print('└─────────────────────────────────────────────────────────────────────');
+      print(
+        '└─────────────────────────────────────────────────────────────────────',
+      );
     }
     super.onResponse(response, handler);
   }
@@ -58,14 +74,20 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
-      print('┌─────────────────────────────────────────────────────────────────────');
+      print(
+        '┌─────────────────────────────────────────────────────────────────────',
+      );
       print('│ ❌ ERROR: ${err.type} - ${err.message}');
-      print('│ 🔄 REQUEST: ${err.requestOptions.method} ${err.requestOptions.uri}');
+      print(
+        '│ 🔄 REQUEST: ${err.requestOptions.method} ${err.requestOptions.uri}',
+      );
       if (err.response != null) {
         print('│ 📊 STATUS: ${err.response?.statusCode}');
         print('│ 📄 BODY: ${_formatData(err.response?.data)}');
       }
-      print('└─────────────────────────────────────────────────────────────────────');
+      print(
+        '└─────────────────────────────────────────────────────────────────────',
+      );
     }
     super.onError(err, handler);
   }
