@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          include:
+            - lib/domain/entities/**.dart
+            - lib/infrastructure/models/**.dart
+            - lib/presentation/states/**.dart
+      json_serializable:
+        generate_for:
+          include:
+            - lib/infrastructure/models/**.dart
+        options:
+          explicit_to_json: true
+          field_rename: snake
+          include_if_null: false
