@@ -3,6 +3,7 @@ import 'package:flutter_app/presentation/providers/location_provider.dart';
 import 'package:flutter_app/presentation/providers/weather_providers.dart';
 import 'package:flutter_app/presentation/states/weather_state.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -10,8 +11,6 @@ import '../widgets/error_widget.dart';
 import '../widgets/forecast_list.dart';
 import '../widgets/loading_widget.dart';
 import '../widgets/weather_card.dart';
-import 'search_location_screen.dart';
-import 'settings_screen.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
@@ -51,15 +50,11 @@ class HomeScreen extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () async {
-              final navigatorResult = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchLocationScreen(),
-                ),
-              );
+              // Navigate to search screen
+              final result = await context.push('/search');
 
               // If we got a location back, refresh weather
-              if (navigatorResult == true) {
+              if (result == true) {
                 weatherNotifier.fetchWeatherAndForecast();
               }
             },
@@ -68,13 +63,11 @@ class HomeScreen extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () async {
-              final navigatorResult = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
+              // Navigate to settings screen
+              final result = await context.push('/settings');
 
               // If we updated settings, refresh weather
-              if (navigatorResult == true) {
+              if (result == true) {
                 weatherNotifier.fetchWeatherAndForecast();
               }
             },

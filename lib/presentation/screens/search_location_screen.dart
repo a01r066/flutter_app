@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/presentation/providers/weather_providers.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import '../providers/location_provider.dart';
 
 class SearchLocationScreen extends HookConsumerWidget {
@@ -37,7 +39,7 @@ class SearchLocationScreen extends HookConsumerWidget {
               isSearching.value = false;
               if (locationState.errorMessage == null) {
                 if (context.mounted) {
-                  Navigator.pop(context, true);
+                  context.pop(true);
                 }
               }
             },
@@ -55,14 +57,15 @@ class SearchLocationScreen extends HookConsumerWidget {
               decoration: InputDecoration(
                 hintText: 'Search for a city',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: searchController.text.isNotEmpty
-                    ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    searchController.clear();
-                  },
-                )
-                    : null,
+                suffixIcon:
+                    searchController.text.isNotEmpty
+                        ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                          },
+                        )
+                        : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -78,7 +81,7 @@ class SearchLocationScreen extends HookConsumerWidget {
                   isSearching.value = false;
                   if (locationState.errorMessage == null) {
                     if (context.mounted) {
-                      Navigator.pop(context, true);
+                      context.pop(true);
                     }
                   }
                 }
@@ -88,9 +91,7 @@ class SearchLocationScreen extends HookConsumerWidget {
 
           // Loading indicator or error
           if (isSearching.value)
-            const Center(
-              child: CircularProgressIndicator(),
-            )
+            const Center(child: CircularProgressIndicator())
           else if (locationState.errorMessage != null)
             Padding(
               padding: const EdgeInsets.all(16),
@@ -111,7 +112,7 @@ class SearchLocationScreen extends HookConsumerWidget {
               ),
             )
           else
-          // Show search instructions
+            // Show search instructions
             Expanded(
               child: Center(
                 child: Column(
@@ -120,7 +121,9 @@ class SearchLocationScreen extends HookConsumerWidget {
                     Icon(
                       Icons.search,
                       size: 64,
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.5),
                     ),
                     const SizedBox(height: 16),
                     Text(
