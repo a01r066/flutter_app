@@ -1,436 +1,687 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/presentation/providers/weather_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../domain/entities/forecast.dart';
+import '../../domain/entities/weather.dart';
 
-class WeatherDetailsScreen extends ConsumerWidget {
-  final DailyForecast forecast;
-  final String units;
-
-  const WeatherDetailsScreen({
-    super.key,
-    required this.forecast,
-    this.units = 'metric',
-  });
+class WeatherDetailsScreen extends HookConsumerWidget {
+  const WeatherDetailsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    final weatherState = ref.watch(weatherStateProvider);
+    final currentWeather = weatherState.currentWeather;
 
-    // Get temperature unit
-    final tempUnit = AppConstants.temperatureUnits[units] ?? '°C';
-    final speedUnit = AppConstants.speedUnits[units] ?? 'm/s';
+    if (currentWeather == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Weather Details')),
+        body: const Center(child: Text('No weather data available')),
+      );
+    }
+
+    final theme = Theme.of(context);
+    final tempUnit = AppConstants.temperatureUnits[weatherState.units] ?? '°C';
+    final speedUnit = AppConstants.speedUnits[weatherState.units] ?? 'm/s';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(DateFormat('EEEE, MMM d').format(forecast.dateTime)),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Weather overview card
-            Card(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    // Weather icon and condition
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.network(
-                          'https://openweathermap.org/img/wn/${forecast.icon}@2x.png',
-                          width: 80,
-                          height: 80,
-                          errorBuilder:
-                              (context, error, stackTrace) =>
-                                  const Icon(Icons.cloud, size: 80),
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(forecast.main, style: textTheme.headlineSmall),
-                            Text(
-                              _capitalizeFirst(forecast.description),
-                              style: textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+      appBar: AppBar(title: Text(currentWeather.cityName)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 32.0),
+            // Added more bottom padding
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Weather Header
+                _buildWeatherHeader(context, currentWeather, tempUnit),
 
-                    const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-                    // Temperature display
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        // Morning
-                        _buildTemperatureItem(
-                          context,
-                          'Morning',
-                          forecast.temperature.morning,
-                          Icons.wb_twilight,
-                          tempUnit,
-                        ),
+                // Detailed stats
+                Text('Detailed Information', style: theme.textTheme.titleLarge),
+                const SizedBox(height: 12),
 
-                        // Day
-                        _buildTemperatureItem(
-                          context,
-                          'Day',
-                          forecast.temperature.day,
-                          Icons.wb_sunny,
-                          tempUnit,
-                        ),
-
-                        // Evening
-                        _buildTemperatureItem(
-                          context,
-                          'Evening',
-                          forecast.temperature.evening,
-                          Icons.nights_stay_outlined,
-                          tempUnit,
-                        ),
-
-                        // Night
-                        _buildTemperatureItem(
-                          context,
-                          'Night',
-                          forecast.temperature.night,
-                          Icons.nightlight_round,
-                          tempUnit,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Min/Max temperature
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.arrow_downward,
-                          color: colorScheme.primary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${forecast.temperature.min.toStringAsFixed(1)}$tempUnit',
-                          style: textTheme.titleMedium,
-                        ),
-                        const SizedBox(width: 16),
-                        Icon(
-                          Icons.arrow_upward,
-                          color: colorScheme.error,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${forecast.temperature.max.toStringAsFixed(1)}$tempUnit',
-                          style: textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                  ],
+                // Weather details grid
+                _buildDetailedWeatherGrid(
+                  context,
+                  currentWeather,
+                  tempUnit,
+                  speedUnit,
                 ),
-              ),
-            ),
 
-            // Feels like card
-            Card(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Feels Like', style: textTheme.titleMedium),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        // Morning
-                        _buildTemperatureItem(
-                          context,
-                          'Morning',
-                          forecast.feelsLike.morning,
-                          Icons.wb_twilight,
-                          tempUnit,
-                        ),
+                const SizedBox(height: 20),
 
-                        // Day
-                        _buildTemperatureItem(
-                          context,
-                          'Day',
-                          forecast.feelsLike.day,
-                          Icons.wb_sunny,
-                          tempUnit,
-                        ),
+                // Sun timing section
+                _buildSunTimingSection(context, currentWeather),
 
-                        // Evening
-                        _buildTemperatureItem(
-                          context,
-                          'Evening',
-                          forecast.feelsLike.evening,
-                          Icons.nights_stay_outlined,
-                          tempUnit,
-                        ),
+                const SizedBox(height: 20),
 
-                        // Night
-                        _buildTemperatureItem(
-                          context,
-                          'Night',
-                          forecast.feelsLike.night,
-                          Icons.nightlight_round,
-                          tempUnit,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                // Weather description
+                _buildWeatherDescription(context, currentWeather),
 
-            // Weather details card
-            Card(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Weather Details', style: textTheme.titleMedium),
-                    const SizedBox(height: 16),
-                    _buildWeatherDetailsGrid(context, tempUnit, speedUnit),
-                  ],
-                ),
-              ),
-            ),
+                const SizedBox(height: 20),
 
-            // Sun and precipitation card
-            Card(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Sun & Precipitation', style: textTheme.titleMedium),
-                    const SizedBox(height: 16),
+                // Location info
+                _buildLocationInfo(context, currentWeather),
 
-                    // Sunrise & Sunset
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildInfoItem(
-                            context,
-                            'Sunrise',
-                            DateFormat('h:mm a').format(forecast.sunrise),
-                            Icons.wb_sunny_outlined,
-                          ),
-                        ),
-                        Expanded(
-                          child: _buildInfoItem(
-                            context,
-                            'Sunset',
-                            DateFormat('h:mm a').format(forecast.sunset),
-                            Icons.nightlight_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
+                const SizedBox(height: 32),
 
-                    const SizedBox(height: 16),
-
-                    // UV Index & Rain chance
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildInfoItem(
-                            context,
-                            'UV Index',
-                            _getUVIndexDescription(forecast.uvi),
-                            Icons.wb_sunny,
-                          ),
-                        ),
-                        Expanded(
-                          child: _buildInfoItem(
-                            context,
-                            'Rain Chance',
-                            '${(forecast.pop * 100).toInt()}%',
-                            Icons.water_drop,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Rain amount if available
-                    if (forecast.rain > 0)
-                      _buildInfoItem(
-                        context,
-                        'Rain Amount',
-                        '${forecast.rain.toStringAsFixed(1)} mm',
-                        Icons.umbrella,
+                // Last updated info
+                if (weatherState.lastUpdated != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24.0),
+                    child: Text(
+                      'Last updated: ${DateFormat('E, dd MMM yyyy - hh:mm a').format(weatherState.lastUpdated!)}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.outline,
                       ),
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTemperatureItem(
+  Widget _buildWeatherHeader(
     BuildContext context,
-    String label,
-    double temperature,
-    IconData icon,
-    String unit,
-  ) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      children: [
-        Icon(icon, size: 24),
-        const SizedBox(height: 4),
-        Text(label, style: textTheme.bodySmall),
-        const SizedBox(height: 4),
-        Text(
-          '${temperature.toStringAsFixed(1)}$unit',
-          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWeatherDetailsGrid(
-    BuildContext context,
+    Weather weather,
     String tempUnit,
-    String speedUnit,
   ) {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      childAspectRatio: 2.5,
-      children: [
-        _buildDetailItem(
-          context,
-          icon: Icons.water_drop,
-          label: 'Humidity',
-          value: '${forecast.humidity}%',
-        ),
-        _buildDetailItem(
-          context,
-          icon: Icons.air,
-          label: 'Wind',
-          value: '${forecast.windSpeed.toStringAsFixed(1)} $speedUnit',
-        ),
-        _buildDetailItem(
-          context,
-          icon: Icons.compress,
-          label: 'Pressure',
-          value: '${forecast.pressure} hPa',
-        ),
-        _buildDetailItem(
-          context,
-          icon: Icons.cloud,
-          label: 'Cloudiness',
-          value: '${forecast.clouds}%',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Icon(icon, size: 24, color: theme.colorScheme.primary),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 340;
+
+        if (isNarrow) {
+          // Vertical layout for narrow screens
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(label, style: theme.textTheme.bodySmall),
-              Text(
-                value,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+              // Weather Icon
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Image.network(
+                    'https://openweathermap.org/img/wn/${weather.icon}@2x.png',
+                    width: 80,
+                    height: 80,
+                    errorBuilder:
+                        (context, error, stackTrace) =>
+                            const Icon(Icons.cloud, size: 60),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Temperature and condition
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Main temperature
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${weather.temperature.toStringAsFixed(1)}',
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(tempUnit, style: theme.textTheme.titleLarge),
+                    ],
+                  ),
+
+                  // Weather condition
+                  Text(
+                    _capitalizeEachWord(weather.description),
+                    style: theme.textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Feels like
+                  Text(
+                    'Feels like ${weather.feelsLike.toStringAsFixed(1)}$tempUnit',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+
+                  // Min-Max
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.arrow_downward, size: 14),
+                      Text(
+                        ' ${weather.tempMin.toStringAsFixed(1)}$tempUnit',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_upward, size: 14),
+                      Text(
+                        ' ${weather.tempMax.toStringAsFixed(1)}$tempUnit',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          );
+        } else {
+          // Horizontal layout for wider screens
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Weather Icon
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Image.network(
+                    'https://openweathermap.org/img/wn/${weather.icon}@2x.png',
+                    width: 80,
+                    height: 80,
+                    errorBuilder:
+                        (context, error, stackTrace) =>
+                            const Icon(Icons.cloud, size: 60),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 16),
+
+              // Temperature and condition
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Main temperature
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${weather.temperature.toStringAsFixed(1)}',
+                          style: theme.textTheme.displaySmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(tempUnit, style: theme.textTheme.titleLarge),
+                      ],
+                    ),
+
+                    // Weather condition
+                    Text(
+                      _capitalizeEachWord(weather.description),
+                      style: theme.textTheme.titleMedium,
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Feels like
+                    Text(
+                      'Feels like ${weather.feelsLike.toStringAsFixed(1)}$tempUnit',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+
+                    // Min-Max
+                    Row(
+                      children: [
+                        const Icon(Icons.arrow_downward, size: 14),
+                        Text(
+                          ' ${weather.tempMin.toStringAsFixed(1)}$tempUnit',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.arrow_upward, size: 14),
+                        Text(
+                          ' ${weather.tempMax.toStringAsFixed(1)}$tempUnit',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildDetailedWeatherGrid(
+    BuildContext context,
+    Weather weather,
+    String tempUnit,
+    String speedUnit,
+  ) {
+    final theme = Theme.of(context);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Adjust the cross axis count based on available width
+        final crossAxisCount = constraints.maxWidth > 500 ? 3 : 2;
+
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 1.5,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+          ),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 8,
+          // 8 detail cards
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.thermostat,
+                  title: 'Temperature',
+                  value: '${weather.temperature.toStringAsFixed(1)}$tempUnit',
+                  subtitle: 'Current',
+                );
+              case 1:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.device_thermostat,
+                  title: 'Feels Like',
+                  value: '${weather.feelsLike.toStringAsFixed(1)}$tempUnit',
+                  subtitle: 'Perceived',
+                );
+              case 2:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.water_drop,
+                  title: 'Humidity',
+                  value: '${weather.humidity}%',
+                  subtitle: 'Relative',
+                );
+              case 3:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.compress,
+                  title: 'Pressure',
+                  value: '${weather.pressure} hPa',
+                  subtitle: 'Sea Level',
+                );
+              case 4:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.air,
+                  title: 'Wind Speed',
+                  value: '${weather.windSpeed.toStringAsFixed(1)} $speedUnit',
+                  subtitle: 'Current',
+                );
+              case 5:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.explore,
+                  title: 'Wind Direction',
+                  value: _getWindDirection(weather.windDegree),
+                  subtitle: '${weather.windDegree}°',
+                );
+              case 6:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.cloud,
+                  title: 'Cloudiness',
+                  value: '${weather.clouds}%',
+                  subtitle: 'Coverage',
+                );
+              case 7:
+                return _buildDetailCard(
+                  context,
+                  icon: Icons.visibility,
+                  title: 'Visibility',
+                  value: '${(weather.pressure / 10).toStringAsFixed(1)} km',
+                  subtitle: 'Approximate',
+                );
+              default:
+                return const SizedBox();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String value,
+    required String subtitle,
+  }) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: theme.colorScheme.primary),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleSmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoItem(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
+  Widget _buildSunTimingSection(BuildContext context, Weather weather) {
     final theme = Theme.of(context);
 
-    return Row(
+    // Since the Weather entity doesn't have sunrise/sunset data,
+    // we'll show the local time instead and leave a note
+    final now = DateTime.now();
+    final hours = now.hour;
+    final isDaytime = hours >= 6 && hours < 18;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 24, color: theme.colorScheme.primary),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: theme.textTheme.bodySmall),
-            Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        Text('Time of Day', style: theme.textTheme.titleLarge),
+        const SizedBox(height: 12),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Check for narrow screen
+            final isNarrow = constraints.maxWidth < 340;
+
+            if (isNarrow) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    isDaytime ? Icons.wb_sunny : Icons.nightlight_round,
+                    size: 48,
+                    color:
+                        isDaytime
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.secondary,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    isDaytime ? 'Daytime' : 'Nighttime',
+                    style: theme.textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    'Current local time:',
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    DateFormat('hh:mm a').format(now),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              );
+            } else {
+              return Row(
+                children: [
+                  Icon(
+                    isDaytime ? Icons.wb_sunny : Icons.nightlight_round,
+                    size: 48,
+                    color:
+                        isDaytime
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.secondary,
+                  ),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isDaytime ? 'Daytime' : 'Nighttime',
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        Text(
+                          'Current local time:',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        Text(
+                          DateFormat('hh:mm a').format(now),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Note: Sunrise and sunset data is available in the forecast view',
+          style: theme.textTheme.bodySmall?.copyWith(
+            fontStyle: FontStyle.italic,
+            fontSize: 11,
+          ),
         ),
       ],
     );
   }
 
-  String _getUVIndexDescription(double uvi) {
-    if (uvi < 3) {
-      return 'Low (${uvi.toStringAsFixed(1)})';
-    } else if (uvi < 6) {
-      return 'Moderate (${uvi.toStringAsFixed(1)})';
-    } else if (uvi < 8) {
-      return 'High (${uvi.toStringAsFixed(1)})';
-    } else if (uvi < 11) {
-      return 'Very High (${uvi.toStringAsFixed(1)})';
-    } else {
-      return 'Extreme (${uvi.toStringAsFixed(1)})';
+  Widget _buildWeatherDescription(BuildContext context, Weather weather) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Weather Condition', style: theme.textTheme.titleLarge),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    _getWeatherIcon(weather.main),
+                    size: 24,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      weather.main,
+                      style: theme.textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _getWeatherDescription(weather.main, weather.description),
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationInfo(BuildContext context, Weather weather) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Location', style: theme.textTheme.titleLarge),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.3),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.location_on,
+                color: theme.colorScheme.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      weather.cityName,
+                      style: theme.textTheme.titleSmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Lat: ${weather.latitude.toStringAsFixed(4)}, '
+                      'Lon: ${weather.longitude.toStringAsFixed(4)}',
+                      style: theme.textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper methods
+  String _getWindDirection(int degrees) {
+    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'];
+    return directions[(degrees / 45).round() % 8];
+  }
+
+  String _capitalizeEachWord(String text) {
+    if (text.isEmpty) return text;
+    return text
+        .split(' ')
+        .map(
+          (word) =>
+              word.isEmpty
+                  ? ''
+                  : '${word[0].toUpperCase()}${word.substring(1)}',
+        )
+        .join(' ');
+  }
+
+  IconData _getWeatherIcon(String main) {
+    switch (main.toLowerCase()) {
+      case 'clear':
+        return Icons.wb_sunny;
+      case 'clouds':
+        return Icons.cloud;
+      case 'rain':
+        return Icons.water_drop;
+      case 'drizzle':
+        return Icons.grain;
+      case 'thunderstorm':
+        return Icons.flash_on;
+      case 'snow':
+        return Icons.ac_unit;
+      case 'mist':
+      case 'fog':
+      case 'haze':
+        return Icons.cloud;
+      default:
+        return Icons.wb_sunny;
     }
   }
 
-  String _capitalizeFirst(String text) {
-    if (text.isEmpty) return text;
-    return text[0].toUpperCase() + text.substring(1);
+  String _getWeatherDescription(String main, String description) {
+    final Map<String, String> detailedDescriptions = {
+      'clear':
+          'Clear skies with excellent visibility. Perfect weather for outdoor activities.',
+      'clouds':
+          'Cloud cover is present, which might affect temperature and sunlight.',
+      'rain':
+          'Rainfall is occurring. It\'s advisable to carry an umbrella or raincoat.',
+      'drizzle':
+          'Light rain is falling. The precipitation is finer than regular rain.',
+      'thunderstorm':
+          'Thunderstorm activity with possible lightning and heavy rain. Take shelter indoors.',
+      'snow':
+          'Snowfall is occurring. Roads may be slippery and visibility might be reduced.',
+      'mist': 'Thin fog is present, which might slightly reduce visibility.',
+      'fog':
+          'Dense water vapor is reducing visibility significantly. Drive carefully.',
+      'haze':
+          'Atmospheric dust or smoke is causing reduced visibility and air quality.',
+    };
+
+    return detailedDescriptions[main.toLowerCase()] ??
+        'Current weather condition is $_capitalizeEachWord(description).';
   }
 }

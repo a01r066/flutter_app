@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/router/router_config.dart';
 import '../widgets/error_widget.dart';
 import '../widgets/forecast_list.dart';
 import '../widgets/loading_widget.dart';
@@ -50,8 +51,7 @@ class HomeScreen extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () async {
-              // Navigate to search screen
-              final result = await context.push('/search');
+              final result = await context.pushNamed(AppRoutes.search);
 
               // If we got a location back, refresh weather
               if (result == true) {
@@ -63,8 +63,7 @@ class HomeScreen extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () async {
-              // Navigate to settings screen
-              final result = await context.push('/settings');
+              final result = await context.pushNamed(AppRoutes.settings);
 
               // If we updated settings, refresh weather
               if (result == true) {
@@ -147,10 +146,30 @@ class HomeScreen extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Current weather card
-            WeatherCard(
-              weather: weatherState.currentWeather!,
-              isFromCache: weatherState.isFromCache,
+            // Current weather card - now tappable to view details
+            GestureDetector(
+              onTap: () {
+                context.pushNamed(AppRoutes.weatherDetails);
+              },
+              child: WeatherCard(
+                weather: weatherState.currentWeather!,
+                isFromCache: weatherState.isFromCache,
+              ),
+            ),
+
+            // Tap to see more details
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextButton.icon(
+                icon: const Icon(Icons.info_outline),
+                label: const Text('View detailed weather information'),
+                onPressed: () {
+                  context.pushNamed(AppRoutes.weatherDetails);
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+              ),
             ),
 
             // Forecast data

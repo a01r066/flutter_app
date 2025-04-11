@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/router/router_config.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'core/constants/app_constants.dart';
-import 'core/router/router.dart';
 
-class WeatherApp extends StatelessWidget {
+class WeatherApp extends ConsumerWidget {
   const WeatherApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Get the router from the provider
+    final router = ref.watch(routerProvider);
+
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: _buildLightTheme(),
       darkTheme: _buildDarkTheme(),
       themeMode: ThemeMode.system,
-      routerConfig: AppRouter.router,
+      routerConfig: router,
     );
   }
 
