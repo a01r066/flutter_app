@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../presentation/screens/home_screen.dart';
 import '../../presentation/screens/search_location_screen.dart';
 import '../../presentation/screens/settings_screen.dart';
+import '../../presentation/screens/theme_selection_screen.dart';
 import '../../presentation/screens/weather_details_screen.dart';
 import 'custom_transitions.dart';
 
@@ -41,15 +42,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
           ),
           GoRoute(
+            name: 'themes',
+            path: 'themes',
+            pageBuilder:
+                (context, state) => CustomTransitions.slideTransition(
+                  context: context,
+                  state: state,
+                  child: const ThemeSelectionScreen(),
+                ),
+          ),
+          GoRoute(
             name: 'weatherDetails',
             path: 'details',
             pageBuilder: (context, state) {
-              // Instead of using state.extra directly, we'll check if it's a Weather object
-              // or if we need to get it from the provider
               return CustomTransitions.scaleTransition(
                 context: context,
                 state: state,
-                child: WeatherDetailsScreen(),
+                child: const WeatherDetailsScreen(),
               );
             },
           ),
@@ -68,5 +77,6 @@ class AppRoutes {
   static const String home = 'home';
   static const String search = 'search';
   static const String settings = 'settings';
+  static const String themes = 'themes';
   static const String weatherDetails = 'weatherDetails';
 }

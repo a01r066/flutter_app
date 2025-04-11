@@ -47,6 +47,14 @@ class HomeScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('Weather App'),
         actions: [
+          // Theme button
+          IconButton(
+            icon: const Icon(Icons.color_lens),
+            tooltip: 'Change theme',
+            onPressed: () {
+              context.pushNamed(AppRoutes.themes);
+            },
+          ),
           // Search button
           IconButton(
             icon: const Icon(Icons.search),

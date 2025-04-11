@@ -157,6 +157,27 @@ class SettingsScreen extends HookConsumerWidget {
 
           const Divider(height: 32),
 
+          // Appearance/Theme Section
+          ListTile(
+            title: const Text('Appearance'),
+            subtitle: const Text('Customize app theme and appearance'),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.color_lens),
+              label: const Text('Customize Theme'),
+              onPressed: () {
+                context.pushNamed('themes');
+              },
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
+          ),
+
+          const Divider(height: 32),
+
           // Cache Section
           ListTile(
             title: const Text('Cache Settings'),

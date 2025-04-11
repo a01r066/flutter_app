@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/router/router_config.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'core/constants/app_constants.dart';
+import 'core/router/router_config.dart';
+import 'core/theme/theme_config.dart';
+import 'presentation/providers/theme_provider.dart';
+import 'presentation/states/theme_state.dart';
 
 class WeatherApp extends ConsumerWidget {
   const WeatherApp({super.key});
@@ -13,148 +15,57 @@ class WeatherApp extends ConsumerWidget {
     // Get the router from the provider
     final router = ref.watch(routerProvider);
 
+    // Get theme state from provider
+    final themeState = ref.watch(themeStateProvider);
+
+    // Determine which theme to use based on theme state
+    ThemeData lightTheme;
+    ThemeData darkTheme;
+
+    switch (themeState.themeType) {
+      case ThemeType.vibrant:
+        lightTheme = ThemeConfig.vibrantLightTheme();
+        darkTheme = ThemeConfig.vibrantDarkTheme();
+        break;
+      case ThemeType.professional:
+        lightTheme = ThemeConfig.professionalLightTheme();
+        darkTheme = ThemeConfig.professionalDarkTheme();
+        break;
+      case ThemeType.system:
+      default:
+        // Use default Material 3 themes for system mode
+        final colorScheme = ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        );
+
+        lightTheme = ThemeData(colorScheme: colorScheme, useMaterial3: true);
+
+        darkTheme = ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true,
+        );
+        break;
+    }
+
+    // Determine theme mode
+    ThemeMode themeMode;
+    if (themeState.themeType == ThemeType.system) {
+      themeMode = ThemeMode.system;
+    } else {
+      themeMode = themeState.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    }
+
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: _buildLightTheme(),
-      darkTheme: _buildDarkTheme(),
-      themeMode: ThemeMode.system,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
       routerConfig: router,
-    );
-  }
-
-  ThemeData _buildLightTheme() {
-    final baseTheme = ThemeData.light();
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: Colors.blue,
-      brightness: Brightness.light,
-    );
-
-    return baseTheme.copyWith(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      textTheme: GoogleFonts.interTextTheme(baseTheme.textTheme),
-      appBarTheme: AppBarTheme(
-        centerTitle: true,
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
-        elevation: 0,
-      ),
-      cardTheme: CardTheme(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 2,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }
-
-  ThemeData _buildDarkTheme() {
-    final baseTheme = ThemeData.dark();
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: Colors.blue,
-      brightness: Brightness.dark,
-    );
-
-    return baseTheme.copyWith(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      textTheme: GoogleFonts.interTextTheme(baseTheme.textTheme),
-      appBarTheme: AppBarTheme(
-        centerTitle: true,
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
-        elevation: 0,
-      ),
-      cardTheme: CardTheme(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 1,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      scaffoldBackgroundColor: colorScheme.background,
-      dialogTheme: DialogTheme(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        backgroundColor: colorScheme.surface,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
-      ),
-      bottomSheetTheme: BottomSheetThemeData(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        backgroundColor: colorScheme.surface,
-      ),
-      dividerTheme: DividerThemeData(
-        color: colorScheme.outline.withOpacity(0.2),
-        thickness: 1,
-        space: 1,
-      ),
-      listTileTheme: ListTileThemeData(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      ),
     );
   }
 }
