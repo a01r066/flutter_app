@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/generated/l10n.dart';
 import 'package:flutter_app/presentation/providers/weather_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +17,7 @@ class WeatherDetailsScreen extends HookConsumerWidget {
 
     if (currentWeather == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Weather Details')),
+        appBar: AppBar(title: Text(S.of(context).weatherDetails)),
         body: const Center(child: Text('No weather data available')),
       );
     }
@@ -42,7 +43,10 @@ class WeatherDetailsScreen extends HookConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Detailed stats
-                Text('Detailed Information', style: theme.textTheme.titleLarge),
+                Text(
+                  S.of(context).detailedInformation,
+                  style: theme.textTheme.titleLarge,
+                ),
                 const SizedBox(height: 12),
 
                 // Weather details grid
@@ -298,47 +302,47 @@ class WeatherDetailsScreen extends HookConsumerWidget {
                 return _buildDetailCard(
                   context,
                   icon: Icons.thermostat,
-                  title: 'Temperature',
+                  title: S.of(context).temperatureDetail,
                   value: '${weather.temperature.toStringAsFixed(1)}$tempUnit',
-                  subtitle: 'Current',
+                  subtitle: S.of(context).currentLabel,
                 );
               case 1:
                 return _buildDetailCard(
                   context,
                   icon: Icons.device_thermostat,
-                  title: 'Feels Like',
+                  title: S.of(context).feelsLikeDetail,
                   value: '${weather.feelsLike.toStringAsFixed(1)}$tempUnit',
-                  subtitle: 'Perceived',
+                  subtitle: S.of(context).perceivedLabel,
                 );
               case 2:
                 return _buildDetailCard(
                   context,
                   icon: Icons.water_drop,
-                  title: 'Humidity',
+                  title: S.of(context).humidityDetail,
                   value: '${weather.humidity}%',
-                  subtitle: 'Relative',
+                  subtitle: S.of(context).relativeLabel,
                 );
               case 3:
                 return _buildDetailCard(
                   context,
                   icon: Icons.compress,
-                  title: 'Pressure',
+                  title: S.of(context).pressureDetail,
                   value: '${weather.pressure} hPa',
-                  subtitle: 'Sea Level',
+                  subtitle: S.of(context).seaLevelLabel,
                 );
               case 4:
                 return _buildDetailCard(
                   context,
                   icon: Icons.air,
-                  title: 'Wind Speed',
+                  title: S.of(context).windSpeedDetail,
                   value: '${weather.windSpeed.toStringAsFixed(1)} $speedUnit',
-                  subtitle: 'Current',
+                  subtitle: S.of(context).currentLabel,
                 );
               case 5:
                 return _buildDetailCard(
                   context,
                   icon: Icons.explore,
-                  title: 'Wind Direction',
+                  title: S.of(context).windDirectionDetail,
                   value: _getWindDirection(weather.windDegree),
                   subtitle: '${weather.windDegree}°',
                 );
@@ -346,17 +350,17 @@ class WeatherDetailsScreen extends HookConsumerWidget {
                 return _buildDetailCard(
                   context,
                   icon: Icons.cloud,
-                  title: 'Cloudiness',
+                  title: S.of(context).cloudinessDetail,
                   value: '${weather.clouds}%',
-                  subtitle: 'Coverage',
+                  subtitle: S.of(context).coverageLabel,
                 );
               case 7:
                 return _buildDetailCard(
                   context,
                   icon: Icons.visibility,
-                  title: 'Visibility',
+                  title: S.of(context).visibilityDetail,
                   value: '${(weather.pressure / 10).toStringAsFixed(1)} km',
-                  subtitle: 'Approximate',
+                  subtitle: S.of(context).approximateLabel,
                 );
               default:
                 return const SizedBox();

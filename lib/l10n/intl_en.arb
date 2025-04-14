@@ -1,0 +1,417 @@
+{
+  "@@locale": "en",
+  "appTitle": "Weather App",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "searchLocation": "Search Location",
+  "@searchLocation": {
+    "description": "Title for the search location screen"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Title for the settings screen"
+  },
+  "weatherDetails": "Weather Details",
+  "@weatherDetails": {
+    "description": "Title for the weather details screen"
+  },
+  "themeSettings": "Theme Settings",
+  "@themeSettings": {
+    "description": "Title for the theme settings screen"
+  },
+  "searchForCity": "Search for a city",
+  "@searchForCity": {
+    "description": "Hint text for the city search field"
+  },
+  "searchInstructions": "Search for a city to get weather information",
+  "@searchInstructions": {
+    "description": "Instructions for searching a location"
+  },
+  "useCurrentLocation": "Or use your current location",
+  "@useCurrentLocation": {
+    "description": "Text suggesting to use current location"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button label for retrying an operation"
+  },
+  "noWeatherData": "No weather data available",
+  "@noWeatherData": {
+    "description": "Message displayed when no weather data is available"
+  },
+  "feelsLike": "Feels like {temperature}",
+  "@feelsLike": {
+    "description": "Text for 'feels like' temperature",
+    "placeholders": {
+      "temperature": {
+        "type": "String",
+        "example": "21°C"
+      }
+    }
+  },
+  "lastUpdated": "Last updated: {time}",
+  "@lastUpdated": {
+    "description": "Text showing when data was last updated",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "5 minutes ago"
+      }
+    }
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Text for 'just now' in time descriptions"
+  },
+  "minutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@minutesAgo": {
+    "description": "Text for minutes ago with plural support",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "hoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@hoursAgo": {
+    "description": "Text for hours ago with plural support",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "daysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@daysAgo": {
+    "description": "Text for days ago with plural support",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "hourlyForecast": "Hourly Forecast",
+  "@hourlyForecast": {
+    "description": "Title for the hourly forecast section"
+  },
+  "dailyForecast": "7-Day Forecast",
+  "@dailyForecast": {
+    "description": "Title for the daily forecast section"
+  },
+  "weatherAlerts": "Weather Alerts",
+  "@weatherAlerts": {
+    "description": "Title for the weather alerts section"
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Text for 'Today' in forecast"
+  },
+  "tomorrow": "Tomorrow",
+  "@tomorrow": {
+    "description": "Text for 'Tomorrow' in forecast"
+  },
+  "temperatureUnits": "Temperature Units",
+  "@temperatureUnits": {
+    "description": "Title for temperature units settings"
+  },
+  "currentUnit": "Current: {unit}",
+  "@currentUnit": {
+    "description": "Text showing current temperature unit",
+    "placeholders": {
+      "unit": {
+        "type": "String",
+        "example": "Celsius (°C)"
+      }
+    }
+  },
+  "celsius": "Celsius (°C)",
+  "@celsius": {
+    "description": "Text for Celsius temperature unit"
+  },
+  "fahrenheit": "Fahrenheit (°F)",
+  "@fahrenheit": {
+    "description": "Text for Fahrenheit temperature unit"
+  },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Title for appearance settings"
+  },
+  "customizeAppearance": "Customize app theme and appearance",
+  "@customizeAppearance": {
+    "description": "Description for appearance settings"
+  },
+  "customizeTheme": "Customize Theme",
+  "@customizeTheme": {
+    "description": "Button label for theme customization"
+  },
+  "apiKeyTitle": "OpenWeather API Key",
+  "@apiKeyTitle": {
+    "description": "Title for API key settings"
+  },
+  "apiKeyDescription": "Required for weather data. Get your free API key at openweathermap.org",
+  "@apiKeyDescription": {
+    "description": "Description for API key settings"
+  },
+  "apiKeyHint": "Enter your OpenWeather API Key",
+  "@apiKeyHint": {
+    "description": "Hint text for API key input"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Button label for saving"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button label for canceling"
+  },
+  "cacheSettings": "Cache Settings",
+  "@cacheSettings": {
+    "description": "Title for cache settings"
+  },
+  "cacheDuration": "Weather data is cached for {duration} minutes",
+  "@cacheDuration": {
+    "description": "Text explaining cache duration",
+    "placeholders": {
+      "duration": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "clearCache": "Clear Cache",
+  "@clearCache": {
+    "description": "Button label for clearing cache"
+  },
+  "cacheCleared": "Cache cleared successfully",
+  "@cacheCleared": {
+    "description": "Message when cache is cleared"
+  },
+  "clearCacheConfirmTitle": "Clear Cache",
+  "@clearCacheConfirmTitle": {
+    "description": "Title for clear cache confirmation dialog"
+  },
+  "clearCacheConfirmMessage": "This will clear all cached weather data. You will need to fetch new data.",
+  "@clearCacheConfirmMessage": {
+    "description": "Message for clear cache confirmation dialog"
+  },
+  "clear": "Clear",
+  "@clear": {
+    "description": "Button label for clear action"
+  },
+  "about": "About",
+  "@about": {
+    "description": "Title for about section"
+  },
+  "appVersion": "OpenWeather App {version}",
+  "@appVersion": {
+    "description": "Text showing app version",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "apiInfo": "This app uses the OpenWeather One Call API 3.0",
+  "@apiInfo": {
+    "description": "Information about the API used"
+  },
+  "dataSource": "Weather data is provided by OpenWeather",
+  "@dataSource": {
+    "description": "Information about the data source"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Title for language settings"
+  },
+  "languageDescription": "Change the application language",
+  "@languageDescription": {
+    "description": "Description for language settings"
+  },
+  "systemLanguage": "System Language",
+  "@systemLanguage": {
+    "description": "Text for system language option"
+  },
+  "englishLanguage": "English",
+  "@englishLanguage": {
+    "description": "Text for English language option"
+  },
+  "koreanLanguage": "한국어",
+  "@koreanLanguage": {
+    "description": "Text for Korean language option"
+  },
+  "vietnameseLanguage": "Tiếng Việt",
+  "@vietnameseLanguage": {
+    "description": "Text for Vietnamese language option"
+  },
+  "viewDetails": "View detailed weather information",
+  "@viewDetails": {
+    "description": "Text for viewing weather details"
+  },
+  "temperatureDetail": "Temperature",
+  "@temperatureDetail": {
+    "description": "Label for temperature detail"
+  },
+  "feelsLikeDetail": "Feels Like",
+  "@feelsLikeDetail": {
+    "description": "Label for feels like detail"
+  },
+  "humidityDetail": "Humidity",
+  "@humidityDetail": {
+    "description": "Label for humidity detail"
+  },
+  "pressureDetail": "Pressure",
+  "@pressureDetail": {
+    "description": "Label for pressure detail"
+  },
+  "windSpeedDetail": "Wind Speed",
+  "@windSpeedDetail": {
+    "description": "Label for wind speed detail"
+  },
+  "windDirectionDetail": "Wind Direction",
+  "@windDirectionDetail": {
+    "description": "Label for wind direction detail"
+  },
+  "cloudinessDetail": "Cloudiness",
+  "@cloudinessDetail": {
+    "description": "Label for cloudiness detail"
+  },
+  "visibilityDetail": "Visibility",
+  "@visibilityDetail": {
+    "description": "Label for visibility detail"
+  },
+  "currentLabel": "Current",
+  "@currentLabel": {
+    "description": "Label for current data"
+  },
+  "perceivedLabel": "Perceived",
+  "@perceivedLabel": {
+    "description": "Label for perceived data"
+  },
+  "relativeLabel": "Relative",
+  "@relativeLabel": {
+    "description": "Label for relative data"
+  },
+  "seaLevelLabel": "Sea Level",
+  "@seaLevelLabel": {
+    "description": "Label for sea level data"
+  },
+  "coverageLabel": "Coverage",
+  "@coverageLabel": {
+    "description": "Label for coverage data"
+  },
+  "approximateLabel": "Approximate",
+  "@approximateLabel": {
+    "description": "Label for approximate data"
+  },
+  "noInternetError": "No internet connection. Showing cached data.",
+  "@noInternetError": {
+    "description": "Error message for no internet connection"
+  },
+  "genericError": "Something went wrong. Please try again.",
+  "@genericError": {
+    "description": "Generic error message"
+  },
+  "locationError": "Unable to get current location.",
+  "@locationError": {
+    "description": "Error message for location issues"
+  },
+  "apiKeyMissing": "API key is missing. Please add your API key in settings.",
+  "@apiKeyMissing": {
+    "description": "Error message for missing API key"
+  },
+  "timeOfDay": "Time of Day",
+  "@timeOfDay": {
+    "description": "Title for time of day section"
+  },
+  "daytime": "Daytime",
+  "@daytime": {
+    "description": "Text for daytime"
+  },
+  "nighttime": "Nighttime",
+  "@nighttime": {
+    "description": "Text for nighttime"
+  },
+  "currentLocalTime": "Current local time:",
+  "@currentLocalTime": {
+    "description": "Label for current local time"
+  },
+  "sunriseSunsetNote": "Note: Sunrise and sunset data is available in the forecast view",
+  "@sunriseSunsetNote": {
+    "description": "Note about sunrise and sunset data"
+  },
+  "weatherCondition": "Weather Condition",
+  "@weatherCondition": {
+    "description": "Title for weather condition section"
+  },
+  "location": "Location",
+  "@location": {
+    "description": "Title for location section"
+  },
+  "coordinates": "Lat: {latitude}, Lon: {longitude}",
+  "@coordinates": {
+    "description": "Text showing coordinates",
+    "placeholders": {
+      "latitude": {
+        "type": "String",
+        "example": "40.7128"
+      },
+      "longitude": {
+        "type": "String",
+        "example": "-74.0060"
+      }
+    }
+  },
+  "detailedInformation": "Detailed Information",
+  "@detailedInformation": {
+    "description": "Title for detailed information section"
+  },
+  "selectTheme": "Select Theme",
+  "@selectTheme": {
+    "description": "Title for theme selection"
+  },
+  "systemDefault": "System Default",
+  "@systemDefault": {
+    "description": "Text for system default theme"
+  },
+  "followSystemTheme": "Follow your device theme settings",
+  "@followSystemTheme": {
+    "description": "Description for system default theme"
+  },
+  "vibrantTheme": "Vibrant",
+  "@vibrantTheme": {
+    "description": "Text for vibrant theme"
+  },
+  "vibrantThemeDescription": "Bold and colorful theme",
+  "@vibrantThemeDescription": {
+    "description": "Description for vibrant theme"
+  },
+  "professionalTheme": "Professional",
+  "@professionalTheme": {
+    "description": "Text for professional theme"
+  },
+  "professionalThemeDescription": "Clean and sophisticated theme",
+  "@professionalThemeDescription": {
+    "description": "Description for professional theme"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Text for dark mode"
+  },
+  "enableDarkTheme": "Enable dark theme",
+  "@enableDarkTheme": {
+    "description": "Description for dark mode toggle"
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Title for theme preview"
+  },
+  "done": "Done",
+  "@done": {
+    "description": "Button label for completing an action"
+  }
+}

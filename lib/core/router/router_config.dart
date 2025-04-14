@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../presentation/screens/home_screen.dart';
+import '../../presentation/screens/language_selection_screen.dart';
 import '../../presentation/screens/search_location_screen.dart';
 import '../../presentation/screens/settings_screen.dart';
 import '../../presentation/screens/theme_selection_screen.dart';
@@ -52,6 +53,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
           ),
           GoRoute(
+            name: 'language',
+            path: 'language',
+            pageBuilder:
+                (context, state) => CustomTransitions.slideTransition(
+                  context: context,
+                  state: state,
+                  child: const LanguageSelectionScreen(),
+                ),
+          ),
+          GoRoute(
             name: 'weatherDetails',
             path: 'details',
             pageBuilder: (context, state) {
@@ -78,5 +89,6 @@ class AppRoutes {
   static const String search = 'search';
   static const String settings = 'settings';
   static const String themes = 'themes';
+  static const String language = 'language';
   static const String weatherDetails = 'weatherDetails';
 }

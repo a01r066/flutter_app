@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'core/constants/app_constants.dart';
+import 'core/l10n/l10n.dart';
 import 'core/router/router_config.dart';
 import 'core/theme/theme_config.dart';
+import 'presentation/providers/language_provider.dart';
 import 'presentation/providers/theme_provider.dart';
 import 'presentation/states/theme_state.dart';
 
@@ -17,6 +19,9 @@ class WeatherApp extends ConsumerWidget {
 
     // Get theme state from provider
     final themeState = ref.watch(themeStateProvider);
+
+    // Get locale from provider
+    final locale = ref.watch(localeProvider);
 
     // Determine which theme to use based on theme state
     ThemeData lightTheme;
@@ -62,9 +67,19 @@ class WeatherApp extends ConsumerWidget {
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
+
+      // Theme configuration
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
+
+      // Localization configuration
+      locale: locale,
+      // Set from provider
+      localizationsDelegates: L10n.localizationsDelegates,
+      supportedLocales: L10n.supportedLocales,
+
+      // Router configuration
       routerConfig: router,
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/generated/l10n.dart';
 import 'package:flutter_app/presentation/providers/location_provider.dart';
 import 'package:flutter_app/presentation/providers/weather_providers.dart';
 import 'package:flutter_app/presentation/states/weather_state.dart';
@@ -45,12 +46,12 @@ class HomeScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weather App'),
+        title: Text(S.of(context).appTitle),
         actions: [
           // Theme button
           IconButton(
             icon: const Icon(Icons.color_lens),
-            tooltip: 'Change theme',
+            tooltip: S.of(context).customizeTheme,
             onPressed: () {
               context.pushNamed(AppRoutes.themes);
             },
@@ -119,7 +120,7 @@ class HomeScreen extends HookConsumerWidget {
                         foregroundColor:
                             Theme.of(context).colorScheme.onErrorContainer,
                       ),
-                      child: const Text('Retry'),
+                      child: Text(S.of(context).retry),
                     ),
                   ],
                 ),
@@ -216,7 +217,11 @@ class HomeScreen extends HookConsumerWidget {
                   vertical: 16,
                 ),
                 child: Text(
-                  'Last updated: ${_formatLastUpdated(weatherState.lastUpdated!)}',
+                  S
+                      .of(context)
+                      .lastUpdated(
+                        _formatLastUpdated(weatherState.lastUpdated!),
+                      ),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -237,15 +242,16 @@ class HomeScreen extends HookConsumerWidget {
   String _formatLastUpdated(DateTime lastUpdated) {
     final now = DateTime.now();
     final difference = now.difference(lastUpdated);
+    final s = S.current;
 
     if (difference.inMinutes < 1) {
-      return 'Just now';
+      return s.justNow;
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes} minutes ago';
+      return s.minutesAgo(difference.inMinutes);
     } else if (difference.inHours < 24) {
-      return '${difference.inHours} hours ago';
+      return s.hoursAgo(difference.inHours);
     } else {
-      return '${difference.inDays} days ago';
+      return s.daysAgo(difference.inDays);
     }
   }
 }

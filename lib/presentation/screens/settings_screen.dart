@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/router/router_config.dart';
+import 'package:flutter_app/generated/l10n.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -169,6 +171,27 @@ class SettingsScreen extends HookConsumerWidget {
               label: const Text('Customize Theme'),
               onPressed: () {
                 context.pushNamed('themes');
+              },
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
+          ),
+
+          const Divider(height: 32),
+
+          // Language Section
+          ListTile(
+            title: Text(S.of(context).language),
+            subtitle: Text(S.of(context).languageDescription),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.language),
+              label: Text(S.of(context).language),
+              onPressed: () {
+                context.pushNamed(AppRoutes.language);
               },
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),

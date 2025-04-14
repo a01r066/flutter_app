@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -36,7 +37,7 @@ class HourlyForecastList extends StatelessWidget {
             children: [
               const Icon(Icons.access_time),
               const SizedBox(width: 8),
-              Text('Hourly Forecast', style: textTheme.titleMedium),
+              Text(S.of(context).hourlyForecast, style: textTheme.titleMedium),
             ],
           ),
         ),
@@ -134,7 +135,7 @@ class DailyForecastList extends StatelessWidget {
             children: [
               const Icon(Icons.calendar_today),
               const SizedBox(width: 8),
-              Text('7-Day Forecast', style: textTheme.titleMedium),
+              Text(S.of(context).dailyForecast, style: textTheme.titleMedium),
             ],
           ),
         ),
@@ -148,9 +149,9 @@ class DailyForecastList extends StatelessWidget {
             final date = forecast.dateTime;
             final dayName =
                 index == 0
-                    ? 'Today'
+                    ? S.of(context).today
                     : index == 1
-                    ? 'Tomorrow'
+                    ? S.of(context).tomorrow
                     : DateFormat('EEEE').format(date);
 
             return InkWell(
@@ -285,7 +286,7 @@ class AlertsList extends StatelessWidget {
               Icon(Icons.warning_amber, color: colorScheme.error),
               const SizedBox(width: 8),
               Text(
-                'Weather Alerts',
+                S.of(context).weatherAlerts,
                 style: textTheme.titleMedium?.copyWith(
                   color: colorScheme.error,
                 ),
