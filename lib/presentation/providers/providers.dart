@@ -1,5 +1,7 @@
+import 'package:flutter_app/core/config/env_config.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../core/api/api_client.dart';
 import '../../core/constants/api_constants.dart';
 import '../../core/constants/app_constants.dart';
@@ -14,18 +16,26 @@ import '../../infrastructure/datasources/remote/weather_remote_datasource.dart';
 import '../../infrastructure/repositories/weather_repository_impl.dart';
 import '../../infrastructure/services/location_service.dart';
 
+/// Provider for accessing environment configuration
+final envConfigProvider = Provider<EnvConfig>((ref) {
+  return EnvConfig();
+});
+
 // Core Providers
 final secureStorageProvider = Provider<SecureStorageService>((ref) {
   return SecureStorageService();
 });
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('Shared Preferences must be initialized in main.dart');
+  throw UnimplementedError(
+    'Shared Preferences must be initialized in main.dart',
+  );
 });
 
 final apiClientProvider = Provider<ApiClient>((ref) {
   final secureStorage = ref.watch(secureStorageProvider);
-  return ApiClient(secureStorage);
+  final envConfig = ref.watch(envConfigProvider);
+  return ApiClient(secureStorage, envConfig);
 });
 
 final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
@@ -44,7 +54,9 @@ final locationServiceProvider = Provider<LocationService>((ref) {
 });
 
 // Data Source Providers
-final weatherRemoteDatasourceProvider = Provider<WeatherRemoteDatasource>((ref) {
+final weatherRemoteDatasourceProvider = Provider<WeatherRemoteDatasource>((
+  ref,
+) {
   final apiClient = ref.watch(apiClientProvider);
   return WeatherRemoteDatasourceImpl(apiClient);
 });
@@ -70,7 +82,9 @@ final weatherRepositoryProvider = Provider<WeatherRepository>((ref) {
 });
 
 // Use Case Providers
-final getCurrentWeatherUseCaseProvider = Provider<GetCurrentWeatherUseCase>((ref) {
+final getCurrentWeatherUseCaseProvider = Provider<GetCurrentWeatherUseCase>((
+  ref,
+) {
   final repository = ref.watch(weatherRepositoryProvider);
   return GetCurrentWeatherUseCase(repository);
 });
@@ -83,7 +97,8 @@ final getForecastUseCaseProvider = Provider<GetForecastUseCase>((ref) {
 // Settings Providers
 final unitPreferenceProvider = StateProvider<String>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
-  return prefs.getString(ApiConstants.unitPreference) ?? AppConstants.availableUnits.first;
+  return prefs.getString(ApiConstants.unitPreference) ??
+      AppConstants.availableUnits.first;
 });
 
 // API Key Provider

@@ -1,8 +1,8 @@
 class ApiConstants {
   ApiConstants._();
 
-  // Base URL
-  static const String baseUrl = 'https://api.openweathermap.org/data/3.0';
+  // Base URL is now managed by EnvConfig
+  // static const String baseUrl = 'https://api.openweathermap.org/data/3.0';
 
   // Endpoints
   static const String onecall = '/onecall';

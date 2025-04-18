@@ -1,0 +1,16 @@
+// This is a template file that you'll need to create for each flavor
+// The flutter_flavorizr package will create these files for you
+
+// For development flavor
+#include "Generated.xcconfig"
+FLUTTER_TARGET=lib/main_dev.dart
+FLUTTER_FLAVOR=dev
+PRODUCT_BUNDLE_IDENTIFIER=com.example.flutter_app.dev
+DISPLAY_NAME=OpenWeather Dev
+
+// For production flavor
+// #include "Generated.xcconfig"
+// FLUTTER_TARGET=lib/main_prod.dart
+// FLUTTER_FLAVOR=prod
+// PRODUCT_BUNDLE_IDENTIFIER=com.example.flutter_app
+// DISPLAY_NAME=OpenWeather

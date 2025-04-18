@@ -4,7 +4,8 @@ A clean architecture Flutter project with Hooks_Riverpod
 
 # OpenWeather Flutter App
 
-A Flutter weather application that uses the OpenWeather One Call API 3.0 to display current weather and forecast data, with a clean architecture approach.
+A Flutter weather application that uses the OpenWeather One Call API 3.0 to display current weather
+and forecast data, with a clean architecture approach.
 
 ## Features
 
@@ -47,6 +48,7 @@ The app follows Clean Architecture principles with distinct layers:
     - States
 
 This architecture provides several benefits:
+
 - Clear separation of concerns
 - Testability
 - Maintainability
@@ -67,15 +69,33 @@ This architecture provides several benefits:
 1. Clone the repository
 2. Get an API key from [OpenWeather](https://openweathermap.org/api)
 3. Run `flutter pub get` to install dependencies
-4. Run `flutter pub run build_runner build --delete-conflicting-outputs` to generate the necessary code
+4. Run `flutter pub run build_runner build --delete-conflicting-outputs` to generate the necessary
+   code
 5. Launch the app and enter your API key in the settings
 
 ## Code Generation
 
-The app uses code generation for immutable classes and JSON serialization. After making changes to entities or models, run:
+The app uses code generation for immutable classes and JSON serialization. After making changes to
+entities or models, run:
 
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+```bash# Development build
+flutter run --flavor dev -t lib/main_dev.dart
+```
+
+```bash# Production build
+flutter run --flavor prod -t lib/main_prod.dart
+```
+
+```Building Development APK
+flutter build apk --flavor dev -t lib/main_dev.dart
+```
+
+```Building Production APK
+flutter build apk --flavor prod -t lib/main_prod.dart
 ```
 
 ## License

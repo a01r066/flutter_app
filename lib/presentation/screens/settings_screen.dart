@@ -260,23 +260,44 @@ class SettingsScreen extends HookConsumerWidget {
 
           // App Info
           ListTile(
-            title: const Text('About'),
+            title: Text(S.of(context).about),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                Text(
-                  'OpenWeather App ${AppConstants.appVersion}',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Consumer(
+                  builder: (context, ref, child) {
+                    final envConfig = ref.watch(envConfigProvider);
+                    return Text(
+                      S.of(context).appVersion(envConfig.versionWithBuild),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    );
+                  },
+                ),
+                const SizedBox(height: 4),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final envConfig = ref.watch(envConfigProvider);
+                    return Text(
+                      'Environment: ${envConfig.flavor.name.toUpperCase()}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color:
+                            envConfig.isDev
+                                ? Colors.orange
+                                : Theme.of(context).colorScheme.primary,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'This app uses the OpenWeather One Call API 3.0',
+                  S.of(context).apiInfo,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Weather data is provided by OpenWeather',
+                  S.of(context).dataSource,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/presentation/providers/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'core/constants/app_constants.dart';
 import 'core/l10n/l10n.dart';
 import 'core/router/router_config.dart';
 import 'core/theme/theme_config.dart';
@@ -14,6 +14,9 @@ class WeatherApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Get the environment configuration
+    final envConfig = ref.watch(envConfigProvider);
+
     // Get the router from the provider
     final router = ref.watch(routerProvider);
 
@@ -65,9 +68,8 @@ class WeatherApp extends ConsumerWidget {
     }
 
     return MaterialApp.router(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-
+      title: envConfig.appName,
+      debugShowCheckedModeBanner: envConfig.isDev,
       // Theme configuration
       theme: lightTheme,
       darkTheme: darkTheme,

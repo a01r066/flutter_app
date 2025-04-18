@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "899931857387",
+    "project_id": "owa-prod-ffed3",
+    "storage_bucket": "owa-prod-ffed3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899931857387:android:7b3257107283bc0a2bf9ae",
+        "android_client_info": {
+          "package_name": "com.example.openweather"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf7lPJthYQuZKLVQ0nP6Kj-feMIcxVMsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

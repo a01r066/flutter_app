@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../constants/api_constants.dart';
 import '../storage/secure_storage_service.dart';
@@ -20,7 +19,7 @@ class ApiKeyInterceptor extends Interceptor {
         await _secureStorage.read(key: ApiConstants.apiKeyStorage) ??
         ApiConstants.apiKeyStorage;
 
-    if (apiKey != null && apiKey.isNotEmpty) {
+    if (apiKey.isNotEmpty) {
       options.queryParameters[ApiConstants.apiKey] = apiKey;
     }
 
@@ -29,9 +28,13 @@ class ApiKeyInterceptor extends Interceptor {
 }
 
 class LoggingInterceptor extends Interceptor {
+  final bool isDebugMode;
+
+  LoggingInterceptor({this.isDebugMode = true});
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (kDebugMode) {
+    if (isDebugMode) {
       print(
         '┌─────────────────────────────────────────────────────────────────────',
       );
@@ -50,7 +53,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (kDebugMode) {
+    if (isDebugMode) {
       print(
         '┌─────────────────────────────────────────────────────────────────────',
       );
@@ -73,7 +76,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (kDebugMode) {
+    if (isDebugMode) {
       print(
         '┌─────────────────────────────────────────────────────────────────────',
       );

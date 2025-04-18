@@ -7,15 +7,15 @@ class ErrorHandler {
     // Since we can't rely on the generated when/map methods before code generation,
     // we'll use a simple switch statement based on the runtimeType
     if (failure is NetworkFailure) {
-      return 'Network error: ${(failure as NetworkFailure).message}';
+      return 'Network error: ${(failure).message}';
     } else if (failure is ServerFailure) {
-      return 'Server error: ${(failure as ServerFailure).message}';
+      return 'Server error: ${(failure).message}';
     } else if (failure is CacheFailure) {
-      return 'Cache error: ${(failure as CacheFailure).message}';
+      return 'Cache error: ${(failure).message}';
     } else if (failure is LocationFailure) {
-      return 'Location error: ${(failure as LocationFailure).message}';
+      return 'Location error: ${(failure).message}';
     } else if (failure is UnauthorizedFailure) {
-      return 'Authentication error: ${(failure as UnauthorizedFailure).message}';
+      return 'Authentication error: ${(failure).message}';
     } else {
       return 'Unknown error: ${(failure as UnknownFailure).message}';
     }

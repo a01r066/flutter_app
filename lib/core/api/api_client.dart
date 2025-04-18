@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_app/core/config/env_config.dart';
 
 import '../constants/api_constants.dart';
 import '../storage/secure_storage_service.dart';
@@ -8,9 +9,10 @@ import 'api_interceptors.dart';
 class ApiClient {
   final Dio _dio;
   final SecureStorageService _secureStorage;
+  final EnvConfig _envConfig;
 
-  ApiClient(this._secureStorage) : _dio = Dio() {
-    _dio.options.baseUrl = ApiConstants.baseUrl;
+  ApiClient(this._secureStorage, this._envConfig) : _dio = Dio() {
+    _dio.options.baseUrl = _envConfig.baseUrl;
     _dio.options.connectTimeout = const Duration(seconds: 10);
     _dio.options.receiveTimeout = const Duration(seconds: 10);
     _dio.options.sendTimeout = const Duration(seconds: 10);
@@ -20,7 +22,7 @@ class ApiClient {
       ApiKeyInterceptor(_secureStorage),
       ConnectivityInterceptor(),
       CacheControlInterceptor(),
-      LoggingInterceptor(), // Always add this last for better logging
+      LoggingInterceptor(isDebugMode: _envConfig.isDev), // Log only in dev mode
     ]);
   }
 
