@@ -52,14 +52,14 @@ class HourlyForecastList extends StatelessWidget {
               final hour = DateFormat('ha').format(forecast.dateTime);
 
               return Container(
-                width: 80,
-                margin: const EdgeInsets.only(right: 12),
+                width: 72, // Slightly smaller width to avoid overflow
+                margin: const EdgeInsets.only(right: 8), // Smaller margin
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceVariant,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(6.0), // Smaller padding
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -68,6 +68,7 @@ class HourlyForecastList extends StatelessWidget {
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Image.network(
                         'https://openweathermap.org/img/wn/${forecast.icon}.png',
@@ -80,20 +81,25 @@ class HourlyForecastList extends StatelessWidget {
                       Text(
                         '${forecast.temperature.toStringAsFixed(1)}$tempUnit',
                         style: textTheme.bodyLarge,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.water_drop,
-                            size: 14,
-                            color: Colors.blue,
-                          ),
-                          Text(
-                            '${(forecast.pop * 100).toInt()}%',
-                            style: textTheme.bodySmall,
-                          ),
-                        ],
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.water_drop,
+                              size: 12,
+                              color: Colors.blue,
+                            ),
+                            Text(
+                              '${(forecast.pop * 100).toInt()}%',
+                              style: textTheme.bodySmall,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -209,26 +215,25 @@ class DailyForecastList extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       // Rain chance
-                      Expanded(
-                        flex: 1,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Icon(
                               Icons.water_drop,
-                              size: 16,
+                              size: 12,
                               color: Colors.blue,
                             ),
                             Text(
                               '${(forecast.pop * 100).toInt()}%',
                               style: textTheme.bodySmall,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-
                       // Temperature range
                       Expanded(
                         flex: 2,

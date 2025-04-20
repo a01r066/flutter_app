@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/generated/l10n.dart';
 import 'package:flutter_app/presentation/providers/location_provider.dart';
+import 'package:flutter_app/presentation/providers/providers.dart';
 import 'package:flutter_app/presentation/providers/weather_providers.dart';
 import 'package:flutter_app/presentation/states/weather_state.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -24,6 +25,9 @@ class HomeScreen extends HookConsumerWidget {
     final weatherNotifier = ref.watch(weatherStateProvider.notifier);
     final locationState = ref.watch(locationProvider);
 
+    // Get the environment configuration
+    final envConfig = ref.watch(envConfigProvider);
+
     // Effect to fetch weather on first load
     useEffect(() {
       // Delay the provider update with a microtask to avoid the "Modifying a provider during build" error
@@ -46,7 +50,9 @@ class HomeScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).appTitle),
+        title: Text(
+          S.of(context).appTitle + (envConfig.isDev ? ' Dev' : ' Prod'),
+        ),
         actions: [
           // Theme button
           IconButton(

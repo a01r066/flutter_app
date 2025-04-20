@@ -15,15 +15,17 @@ class CustomFirebaseOption {
     messagingSenderId: "877281649166",
     projectId: "owa-dev-d44d3",
     storageBucket: "owa-dev-d44d3.firebasestorage.app",
+    iosBundleId: "com.example.openweather.dev", // Add this line
   );
 
   /// Firebase options for production environment
   static FirebaseOptions get prodOptions => const FirebaseOptions(
     apiKey: "AIzaSyCvkCDJZV4Adjvog2pTTlffFeV1lrr5QlY",
-    appId: "1:899931857387:android:7b3257107283bc0a2bf9ae",
+    appId: "1:899931857387:ios:d7027170a9c5a7aa2bf9ae",
     messagingSenderId: "899931857387",
     projectId: "owa-prod-ffed3",
     storageBucket: "owa-prod-ffed3.firebasestorage.app",
+    iosBundleId: "com.example.openweather", // Add this line
   );
 }
 
@@ -43,7 +45,10 @@ class FirebaseService {
             : CustomFirebaseOption.prodOptions;
 
     // Initialize Firebase with the options
-    await Firebase.initializeApp(options: options);
+    await Firebase.initializeApp(
+      options: options,
+      name: config.isDev ? 'DEFAULT' : 'DEFAULT',
+    );
 
     // Initialize Firebase Analytics
     final analytics = FirebaseAnalytics.instance;
