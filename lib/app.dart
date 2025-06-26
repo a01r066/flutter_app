@@ -16,6 +16,7 @@ class WeatherApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Get the environment configuration
     final envConfig = ref.watch(envConfigProvider);
+    print("envConfig: $envConfig");
 
     // Get the router from the provider
     final router = ref.watch(routerProvider);
